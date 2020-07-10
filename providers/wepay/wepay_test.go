@@ -1,8 +1,8 @@
 package wepay_test
 
 import (
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/wepay"
+	"github.com/watercraft/goth"
+	"github.com/watercraft/goth/providers/wepay"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"

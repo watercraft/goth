@@ -13,9 +13,9 @@ import (
 	"testing"
 
 	"github.com/gorilla/sessions"
-	"github.com/markbates/goth"
-	. "github.com/markbates/goth/gothic"
-	"github.com/markbates/goth/providers/faux"
+	"github.com/watercraft/goth"
+	. "github.com/watercraft/goth/gothic"
+	"github.com/watercraft/goth/providers/faux"
 	"github.com/stretchr/testify/assert"
 )
 
