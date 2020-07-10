@@ -23,8 +23,8 @@ const (
 
 // URLs and endpoints
 const (
-	authURL         string = "https://slack.com/oauth/authorize"
-	tokenURL        string = "https://slack.com/api/oauth.access"
+	authURL         string = "https://slack.com/oauth/v2/authorize"
+	tokenURL        string = "https://slack.com/api/oauth.v2.access"
 	endpointUser    string = "https://slack.com/api/auth.test"
 	endpointProfile string = "https://slack.com/api/users.info"
 )
