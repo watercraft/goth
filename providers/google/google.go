@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/watercraft/goth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 const endpointProfile string = "https://www.googleapis.com/oauth2/v2/userinfo"

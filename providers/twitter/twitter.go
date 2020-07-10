@@ -13,7 +13,7 @@ import (
 
 	"github.com/watercraft/goth"
 	"github.com/mrjones/oauth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 var (

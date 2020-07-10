@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 // Provider needs to be implemented for each 3rd party authentication provider

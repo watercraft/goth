@@ -11,7 +11,7 @@ import (
 	"fmt"
 
 	"github.com/watercraft/goth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 const (

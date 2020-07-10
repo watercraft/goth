@@ -13,7 +13,7 @@ import (
 
 	"fmt"
 	"github.com/watercraft/goth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 // These vars define the Authentication, Token, and Profile URLS for Gitlab. If

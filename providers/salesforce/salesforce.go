@@ -10,7 +10,7 @@ import (
 	"net/url"
 
 	"github.com/watercraft/goth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 // These vars define the Authentication and Token URLS for Salesforce. If

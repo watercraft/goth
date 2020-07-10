@@ -11,7 +11,7 @@ import (
 	"fmt"
 
 	"github.com/watercraft/goth"
-	"golang.org/x/oauth2"
+	"github.com/watercraft/oauth2"
 )
 
 // Endpoint is SeaTalk's OAuth 2.0 endpoint.
