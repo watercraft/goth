@@ -3,11 +3,8 @@
 package google
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -88,15 +85,19 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 	token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(p.Secret), nil
 	})
+	if err != nil {
+		return user, err
+	}
+	claims = token.Claims.(jwt.MapClaims)
 
 	// Extract the user data we got from Google into our goth.User.
-	user.Name = claims["name"]
-	user.FirstName = claims["given_name"]
-	user.LastName = claims["family_name"]
+	user.Name, _ = claims["name"].(string)
+	user.FirstName, _ = claims["given_name"].(string)
+	user.LastName, _ = claims["family_name"].(string)
 	user.NickName = user.Name
-	user.Email = claims["email"]
-	user.AvatarURL = claims["picture"]
-	user.UserID = claims["sub"]
+	user.Email, _ = claims["email"].(string)
+	user.AvatarURL, _ = claims["picture"].(string)
+	user.UserID, _ = claims["sub"].(string)
 
 	return user, nil
 }
