@@ -82,9 +82,12 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 	}
 
 	claims := jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(p.Secret), nil
-	})
+	/*
+		token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(p.Secret), nil
+		})
+	*/
+	token, _, err := new(jwt.Parser).ParseUnverified(sess.IdToken, claims)
 	if err != nil {
 		return user, err
 	}
