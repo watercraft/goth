@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/watercraft/goth"
 	"github.com/watercraft/oauth2"
 )
@@ -68,16 +69,6 @@ func (p *Provider) BeginAuth(state string) (goth.Session, error) {
 	return session, nil
 }
 
-type googleUser struct {
-	ID        string `json:"id"`
-	Email     string `json:"email"`
-	Name      string `json:"name"`
-	FirstName string `json:"given_name"`
-	LastName  string `json:"family_name"`
-	Link      string `json:"link"`
-	Picture   string `json:"picture"`
-}
-
 // FetchUser will go to Google and access basic information about the user.
 func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 	sess := session.(*Session)
@@ -93,38 +84,19 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 		return user, fmt.Errorf("%s cannot get user information without accessToken", p.providerName)
 	}
 
-	response, err := p.Client().Get(endpointProfile + "?access_token=" + url.QueryEscape(sess.AccessToken))
-	if err != nil {
-		return user, err
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode != http.StatusOK {
-		return user, fmt.Errorf("%s responded with a %d trying to fetch user information", p.providerName, response.StatusCode)
-	}
-
-	responseBytes, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return user, err
-	}
-
-	var u googleUser
-	if err := json.Unmarshal(responseBytes, &u); err != nil {
-		return user, err
-	}
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(p.Secret), nil
+	})
 
 	// Extract the user data we got from Google into our goth.User.
-	user.Name = u.Name
-	user.FirstName = u.FirstName
-	user.LastName = u.LastName
-	user.NickName = u.Name
-	user.Email = u.Email
-	user.AvatarURL = u.Picture
-	user.UserID = u.ID
-	// Google provides other useful fields such as 'hd'; get them from RawData
-	if err := json.Unmarshal(responseBytes, &user.RawData); err != nil {
-		return user, err
-	}
+	user.Name = claims["name"]
+	user.FirstName = claims["given_name"]
+	user.LastName = claims["family_name"]
+	user.NickName = user.Name
+	user.Email = claims["email"]
+	user.AvatarURL = claims["picture"]
+	user.UserID = claims["sub"]
 
 	return user, nil
 }
