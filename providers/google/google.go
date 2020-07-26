@@ -3,9 +3,13 @@
 package google
 
 import (
+	//"crypto/rsa"
+	//"crypto/x509"
+	//"encoding/pem"
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/watercraft/goth"
@@ -83,9 +87,53 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 
 	claims := jwt.MapClaims{}
 	/*
-		token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(p.Secret), nil
-		})
+	   	pemBlock, _ := pem.Decode([]byte(
+	   		`-----BEGIN CERTIFICATE-----
+	   MIIF5DCCBMygAwIBAgIRAKnsFF7UVISXCAAAAABL9hAwDQYJKoZIhvcNAQELBQAw
+	   QjELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFUdvb2dsZSBUcnVzdCBTZXJ2aWNlczET
+	   MBEGA1UEAxMKR1RTIENBIDFPMTAeFw0yMDA3MDcwODA4NTlaFw0yMDA5MjkwODA4
+	   NTlaMHExCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH
+	   Ew1Nb3VudGFpbiBWaWV3MRMwEQYDVQQKEwpHb29nbGUgTExDMSAwHgYDVQQDExd1
+	   cGxvYWQudmlkZW8uZ29vZ2xlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA
+	   BNcoqvfoTlhCeqONjWufKahlx+WBaO3fCcdXYq0QBKVDLqnyt6du1XOkWtK9KVOf
+	   IXvKblCkgL7/LmkL8++j342jggNvMIIDazAOBgNVHQ8BAf8EBAMCB4AwEwYDVR0l
+	   BAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUFxJLUXuUrAmg
+	   WDftrEejH5aJXFIwHwYDVR0jBBgwFoAUmNH4bhDrz5vsYJ8YkBug630J/SswaAYI
+	   KwYBBQUHAQEEXDBaMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC5wa2kuZ29vZy9n
+	   dHMxbzFjb3JlMCsGCCsGAQUFBzAChh9odHRwOi8vcGtpLmdvb2cvZ3NyMi9HVFMx
+	   TzEuY3J0MIIBKwYDVR0RBIIBIjCCAR6CF3VwbG9hZC52aWRlby5nb29nbGUuY29t
+	   ghQqLmNsaWVudHMuZ29vZ2xlLmNvbYIRKi5kb2NzLmdvb2dsZS5jb22CEiouZHJp
+	   dmUuZ29vZ2xlLmNvbYITKi5nZGF0YS55b3V0dWJlLmNvbYIQKi5nb29nbGVhcGlz
+	   LmNvbYITKi5waG90b3MuZ29vZ2xlLmNvbYITKi51cGxvYWQuZ29vZ2xlLmNvbYIU
+	   Ki51cGxvYWQueW91dHViZS5jb22CFyoueW91dHViZS0zcmQtcGFydHkuY29tghF1
+	   cGxvYWQuZ29vZ2xlLmNvbYISdXBsb2FkLnlvdXR1YmUuY29tgh91cGxvYWRzLnN0
+	   YWdlLmdkYXRhLnlvdXR1YmUuY29tMCEGA1UdIAQaMBgwCAYGZ4EMAQICMAwGCisG
+	   AQQB1nkCBQMwMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5wa2kuZ29vZy9H
+	   VFMxTzFjb3JlLmNybDCCAQMGCisGAQQB1nkCBAIEgfQEgfEA7wB2AMZSoOxIzrP8
+	   qxcJksQ6h0EzCegAZaJiUkAbozYqF8VlAAABcyiJHosAAAQDAEcwRQIgfYnEMLw8
+	   Cl8GfCL9hh4WyWzfQuZ83ng0Hh0FIacAzSECIQCyMzcgKuSZJJIHz8Kgp2FrSxrT
+	   /IwAoDRdFOEvkl3eZwB1AAe3XBvlfWj/8bDGHSMVx7rmV3xXlLdq7rxhOhpp06Ic
+	   AAABcyiJHqYAAAQDAEYwRAIgRGpsng+0XbXCMqOB+B9oSDi6BHRpzRgCTjAPbVMY
+	   sy0CIDBYWgqMBx1hDItlSqzCRNEqzTB55y79Mh4f8S2dsKDyMA0GCSqGSIb3DQEB
+	   CwUAA4IBAQCB1siHEQZR3EfBDiN9/cLlBiTHkEJswSldyqf4Z6XDj71addBqT9+/
+	   P6RvsJi6OWtbCjw64pCa6uRmlxzMRPqNhtPu78j/pvjdjmP8Va6FwEKDVK5qOtKd
+	   dqhufPi/knqYwL5XZcTqPRExlmPACBdTmU2aCV3i3L/kT5NdFTjaAvxBhfKqzqjf
+	   VRZhcMTQVK7U4nwGReEhq/ggahv5jE1rDpSb/0gO51FtNbHe03eAC4iZ6juznxlG
+	   Y5HOqogsicu9qzVO06jqMa9CM2V9FZwNeM6EGuqot76BZkE7Rs8P2y3Z1Qtagzqg
+	   Gw2gi0qdJZXMcnCoVBaf0SJNmDEM0UfM
+	   -----END CERTIFICATE-----
+	   `))
+	   	certs, err := x509.ParseCertificates(pemBlock.Bytes)
+	   	if err != nil {
+	   		return user, err
+	   	}
+	   	if len(certs) < 1 {
+	   		return user, fmt.Errorf("%s invalid certificate", p.providerName)
+	   	}
+	   	rsaPublicKey, _ := certs[0].PublicKey.(*rsa.PublicKey)
+	   	token, err := jwt.ParseWithClaims(sess.IdToken, claims, func(token *jwt.Token) (interface{}, error) {
+	   		return rsaPublicKey, nil
+	   	})
 	*/
 	token, _, err := new(jwt.Parser).ParseUnverified(sess.IdToken, claims)
 	if err != nil {
@@ -94,6 +142,11 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 	claims = token.Claims.(jwt.MapClaims)
 
 	// Extract the user data we got from Google into our goth.User.
+	exp, _ := claims["exp"].(float64)
+	emailVerified, _ := claims["email_verified"].(bool)
+	if !emailVerified || time.Unix(int64(exp), 0).Before(time.Now()) {
+		return user, fmt.Errorf("%s invalid user information", p.providerName)
+	}
 	user.Name, _ = claims["name"].(string)
 	user.FirstName, _ = claims["given_name"].(string)
 	user.LastName, _ = claims["family_name"].(string)
