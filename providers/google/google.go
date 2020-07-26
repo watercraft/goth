@@ -14,7 +14,7 @@ import (
 	"github.com/watercraft/oauth2"
 )
 
-const endpointProfile string = "https://www.googleapis.com/oauth2/v2/userinfo"
+const endpointProfile string = "https://accounts.google.com/o/oauth2/v2/auth"
 
 // New creates a new Google provider, and sets up important connection details.
 // You should always call `google.New` to get a new Provider. Never try to create
@@ -183,4 +183,16 @@ func (p *Provider) SetHostedDomain(hd string) {
 		return
 	}
 	p.authCodeOptions = append(p.authCodeOptions, oauth2.SetAuthURLParam("hd", hd))
+}
+
+func (p *Provider) GetAuthURL() string {
+	return endpointProfile
+}
+
+func (p *Provider) GetClientID() string {
+	return p.ClientKey
+}
+
+func (p *Provider) GetScopes() []string {
+	return p.config.Scopes
 }

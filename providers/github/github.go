@@ -237,3 +237,15 @@ func (p *Provider) RefreshToken(refreshToken string) (*oauth2.Token, error) {
 func (p *Provider) RefreshTokenAvailable() bool {
 	return false
 }
+
+func (p *Provider) GetAuthURL() string {
+	return AuthURL
+}
+
+func (p *Provider) GetClientID() string {
+	return p.ClientKey
+}
+
+func (p *Provider) GetScopes() []string {
+	return p.config.Scopes
+}

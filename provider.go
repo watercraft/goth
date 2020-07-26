@@ -19,6 +19,9 @@ type Provider interface {
 	Debug(bool)
 	RefreshToken(refreshToken string) (*oauth2.Token, error) //Get new access token based on the refresh token
 	RefreshTokenAvailable() bool                             //Refresh token is provided by auth provider or not
+	GetAuthURL() string
+	GetClientID() string
+	GetScopes() []string
 }
 
 const NoAuthUrlErrorMessage = "an AuthURL has not been set"
